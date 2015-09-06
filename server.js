@@ -1,17 +1,25 @@
-var express    = require("express");
-var mysql      = require("mysql");
-var bodyParser = require("body-parser");
-var md5        = require('md5');
-var rest       = require("./REST.js");
+var express      = require("express");
+var mysql        = require("mysql");
+var bodyParser   = require("body-parser");
+var path         = require("path");
+var md5          = require('md5');
+var favicon      = require('serve-favicon');
+var logger       = require('morgan');
+var cookieParser = require('cookie-parser');
+var session      = require('express-session');
+var compression  = require('compression');
+
+var rest  = require("./routes/rest.js");
+var index = require("./routes/index.js");
 
 var app = express();
 
-function REST() {
+function SERVER() {
     var self = this;
     self.connectMysql();
 }
 
-REST.prototype.connectMysql = function () {
+SERVER.prototype.connectMysql = function () {
     var self = this;
     var pool = mysql.createPool({
         connectionLimit: 100,
@@ -31,25 +39,36 @@ REST.prototype.connectMysql = function () {
     });
 };
 
-REST.prototype.configureExpress = function (connection) {
-    var self        = this;
+SERVER.prototype.configureExpress = function (connection) {
+    var self = this;
+
+    app.set('views', path.join(__dirname, 'views'));
+    app.set('view engine', 'jade');
     app.use(bodyParser.urlencoded({extended: true}));
     app.use(bodyParser.json());
-    var router      = express.Router();
+    app.use(compression());
+    app.use(logger('dev'));
+    app.use(cookieParser());
+    app.use(express.static(path.join(__dirname, 'public')));
+
+    var router = express.Router();
     app.use('/api', router);
+
+    app.use('/', index);
+
     var rest_router = new rest(router, connection, md5);
     self.startServer();
 };
 
-REST.prototype.startServer = function () {
+SERVER.prototype.startServer = function () {
     app.listen(3000, function () {
         console.log("All right ! I am alive at Port 3000.");
     });
 };
 
-REST.prototype.stop = function (error) {
+SERVER.prototype.stop = function (error) {
     console.log("ISSUE WITH MYSQL \n" + error);
     process.exit(1);
 };
 
-new REST();
+new SERVER();
