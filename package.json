@@ -1,0 +1,26 @@
+{
+  "name": "restful-api-with-nodejs-and-expressjs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nodejs-tutorials/restful-api-with-nodejs-and-expressjs.git"
+  },
+  "author": "ducito",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nodejs-tutorials/restful-api-with-nodejs-and-expressjs/issues"
+  },
+  "homepage": "https://github.com/nodejs-tutorials/restful-api-with-nodejs-and-expressjs#readme",
+  "dependencies": {
+    "body-parser": "^1.13.3",
+    "express": "^4.13.3",
+    "md5": "^2.0.0",
+    "mysql": "^2.9.0"
+  }
+}
